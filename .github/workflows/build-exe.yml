@@ -1,0 +1,22 @@
+name: Build Windows EXE
+
+on:
+  push:
+    branches: [ main, master ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install -r requirements.txt
+      - run: pyinstaller --noconfirm --clean --windowed --onefile --name VoiceBroadcast --collect-all pyttsx3 main.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: VoiceBroadcast-Windows-x64
+          path: dist/VoiceBroadcast.exe
+          if-no-files-found: error
